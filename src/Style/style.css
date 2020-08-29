@@ -1,0 +1,129 @@
+* {
+  background-color: rgb(35, 40, 43);
+  color: lightgray;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto 50px auto;
+}
+
+.array-container {
+  height: 65%;
+  left: 0px;
+  top: 0px;
+}
+
+.array-bar {
+  background-color: lightskyblue;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.slider {
+  border-radius: 2px;
+  width: 400px;
+  -webkit-appearance: none; /* Override default CSS styles */
+  appearance: none;
+  height: 10px; /* Specified height */
+  background: gray; /* Grey background */
+  outline: none; /* Remove outline */
+  opacity: 1; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: 0.2s; /* 0.2 seconds transition on hover */
+  transition: opacity 0.2s;
+}
+
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  transition-duration: 0.2s;
+  border-radius: 2px;
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 10px; /* Set a specific slider handle width */
+  height: 20px; /* Slider handle height */
+  background: mediumseagreen; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-webkit-slider-thumb:hover {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+}
+
+.slider::-webkit-slider-thumb:disabled {
+  cursor: not-allowed;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  background: #4caf50; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider:disabled {
+  cursor: not-allowed;
+}
+
+button {
+  opacity: 1;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+  background-color: mediumseagreen;
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button#playing {
+  background-color: orangered;
+}
+
+button:hover {
+  margin: 4px 10px;
+  padding: 20px 25px;
+  opacity: 0.9;
+}
+
+button:active {
+  transition-duration: 0.1s;
+  transform: translateY(4px);
+  margin: 4px 15px;
+}
+
+button:focus {
+  outline: 0;
+}
+
+button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+.randomizeBtn {
+  background-color: peru;
+}
+
+.deleteBtn {
+  background-color: orangered;
+}
+
+.footer {
+  font-size: 0.9em;
+  font-weight: 200;
+  margin-top: 2%;
+}
