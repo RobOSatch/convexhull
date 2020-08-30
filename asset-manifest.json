@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/convexhullvisualization/static/css/main.1f5c51ee.chunk.css",
+    "main.js": "/convexhullvisualization/static/js/main.9c9e05dc.chunk.js",
+    "main.js.map": "/convexhullvisualization/static/js/main.9c9e05dc.chunk.js.map",
+    "runtime-main.js": "/convexhullvisualization/static/js/runtime-main.bf355c75.js",
+    "runtime-main.js.map": "/convexhullvisualization/static/js/runtime-main.bf355c75.js.map",
+    "static/js/2.c869734f.chunk.js": "/convexhullvisualization/static/js/2.c869734f.chunk.js",
+    "static/js/2.c869734f.chunk.js.map": "/convexhullvisualization/static/js/2.c869734f.chunk.js.map",
+    "index.html": "/convexhullvisualization/index.html",
+    "precache-manifest.94ed6ba7199a40bf90eeda0f53f94fd6.js": "/convexhullvisualization/precache-manifest.94ed6ba7199a40bf90eeda0f53f94fd6.js",
+    "service-worker.js": "/convexhullvisualization/service-worker.js",
+    "static/css/main.1f5c51ee.chunk.css.map": "/convexhullvisualization/static/css/main.1f5c51ee.chunk.css.map",
+    "static/js/2.c869734f.chunk.js.LICENSE.txt": "/convexhullvisualization/static/js/2.c869734f.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/convexhullvisualization/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bf355c75.js",
+    "static/js/2.c869734f.chunk.js",
+    "static/css/main.1f5c51ee.chunk.css",
+    "static/js/main.9c9e05dc.chunk.js"
+  ]
+}
