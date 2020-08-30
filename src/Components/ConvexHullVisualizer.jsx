@@ -5,6 +5,7 @@ import {
     getGrahamScanAnimations,
     getQuickhullAnimations,
 } from "../Algorithms/jarvisMarch.js";
+import { render } from "react-dom";
 
 // Constants
 const POINT_COLOR = "cornflowerblue";
@@ -12,7 +13,8 @@ const LINE_COLOR = "lightskyblue";
 const HULL_COLOR = "royalblue";
 const CURR_COLOR = "mediumpurple";
 const EXTRA_COLOR = "cornflowerblue";
-const AREA_COLOR = "rgb(65,105,225, 0.1)";
+const AREA_COLOR = "rgb(65,105,225, 0.08)";
+const AREA_COLOR_2 = "rgb(100,149,237, 0.08)";
 
 var canvasWidth, canvasHeight;
 var numberOfPoints = 50;
@@ -22,7 +24,7 @@ var globalContext;
 var timeouts = [];
 
 // Animation stuff
-var animationDuration = 2000;
+var animationDuration = 3000;
 var animationSpeed = animationDuration / numberOfPoints;
 
 const generateRandomPoints = () => {
@@ -77,7 +79,7 @@ const drawConvexHull = (convexHull) => {
         globalContext.lineTo(convexHull[i].x, convexHull[i].y);
     }
 
-    globalContext.fillStyle = AREA_COLOR;
+    globalContext.fillStyle = AREA_COLOR_2;
     globalContext.fill();
 };
 
@@ -136,6 +138,21 @@ const jarvisMarch = () => {
                 globalContext.stroke();
 
                 simpleDrawPoints();
+
+                globalContext.fillStyle = HULL_COLOR;
+
+                globalContext.moveTo(currAnim.hull[0].x, currAnim.hull[0].y);
+                for (let i = 0; i < currAnim.hull.length; ++i) {
+                    globalContext.beginPath();
+                    globalContext.arc(
+                        currAnim.hull[i].x,
+                        currAnim.hull[i].y,
+                        15,
+                        0,
+                        2 * Math.PI
+                    );
+                    globalContext.fill();
+                }
             }, animationSpeed * i)
         );
     }
@@ -197,6 +214,8 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
                 };
                 points.push(randomVec);
             }
+
+            renderPoints(globalContext);
         },
         runJarvisMarch() {
             jarvisMarch();
