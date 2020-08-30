@@ -439,9 +439,9 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
             .slice(0, -2);
 
         canvas.width = width * ratio;
-        canvas.height = height * ratio;
+        canvas.height = height * ratio * 0.8;
         canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
+        canvas.style.height = `${height * 0.8}px`;
 
         canvasWidth = canvas.width;
         canvasHeight = canvas.height;
@@ -485,10 +485,7 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
 
     return (
         <div className="convexhull">
-            <canvas
-                ref={canvasRef}
-                style={{ width: "100%", height: "1000px" }}
-            />
+            <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
         </div>
     );
 });
