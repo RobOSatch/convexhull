@@ -26,6 +26,9 @@ var animationSpeed = (animationDuration / numberOfPoints) * 2;
 const QUICKHULL_SPEED = 0.2;
 const JARVIS_SPEED = 1.5;
 
+var pointRadius = 15;
+var strokeWidth = 10;
+
 var animating = false;
 
 const generateRandomPoints = () => {
@@ -53,7 +56,13 @@ const renderPoints = (context) => {
                     timeouts.push(
                         setTimeout(() => {
                             context.beginPath();
-                            context.arc(p.x, p.y, j * 3, 0, 2 * Math.PI);
+                            context.arc(
+                                p.x,
+                                p.y,
+                                (j * pointRadius) / 5,
+                                0,
+                                2 * Math.PI
+                            );
                             context.fill();
                         }, j * 50)
                     );
@@ -70,7 +79,7 @@ const simpleDrawPoints = () => {
 
         for (let j = 0; j < 5; ++j) {
             globalContext.beginPath();
-            globalContext.arc(p.x, p.y, j * 3, 0, 2 * Math.PI);
+            globalContext.arc(p.x, p.y, (j * pointRadius) / 5, 0, 2 * Math.PI);
             globalContext.fill();
         }
     }
@@ -126,7 +135,7 @@ const jarvisMarch = (props) => {
                     );
 
                     let currAnim = animations[i];
-                    globalContext.lineWidth = 10;
+                    globalContext.lineWidth = strokeWidth;
 
                     if (currAnim.a !== null) {
                         // draw current comparison
@@ -166,7 +175,7 @@ const jarvisMarch = (props) => {
                         globalContext.arc(
                             currAnim.hull[i].x,
                             currAnim.hull[i].y,
-                            15,
+                            pointRadius,
                             0,
                             2 * Math.PI
                         );
@@ -220,7 +229,7 @@ const quickHull = (props) => {
                     );
 
                     let currAnim = animations[i];
-                    globalContext.lineWidth = 10;
+                    globalContext.lineWidth = strokeWidth;
 
                     if (currAnim.a !== null) {
                         // draw current comparison
@@ -262,7 +271,7 @@ const quickHull = (props) => {
                         globalContext.arc(
                             currAnim.hull[i].x,
                             currAnim.hull[i].y,
-                            15,
+                            pointRadius,
                             0,
                             2 * Math.PI
                         );
@@ -357,7 +366,13 @@ const canvasClicked = (e, ratio) => {
         timeouts.push(
             setTimeout(() => {
                 globalContext.beginPath();
-                globalContext.arc(p.x, p.y, j * 3, 0, 2 * Math.PI);
+                globalContext.arc(
+                    p.x,
+                    p.y,
+                    (j * pointRadius) / 5,
+                    0,
+                    2 * Math.PI
+                );
                 globalContext.fill();
             }, j * 50)
         );
@@ -368,6 +383,8 @@ const canvasClicked = (e, ratio) => {
 
 const ConvexHullVisualizer = forwardRef((props, ref) => {
     let canvasRef = useRef();
+    pointRadius = 7.5 * window.devicePixelRatio;
+    strokeWidth = 5 * window.devicePixelRatio;
 
     useImperativeHandle(ref, () => ({
         generateRandomPoints() {
@@ -382,6 +399,7 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
                 globalContext.canvas.width,
                 globalContext.canvas.height
             );
+
             points = [];
             for (let i = 0; i < numberOfPoints; ++i) {
                 let randomVec = {
