@@ -14,7 +14,7 @@ const AREA_COLOR = "rgb(65,105,225, 0.08)";
 const AREA_COLOR_2 = "rgb(100,149,237, 0.08)";
 
 var canvasWidth, canvasHeight;
-var numberOfPoints = 100;
+var numberOfPoints = 50;
 var points = [];
 
 var globalContext;
