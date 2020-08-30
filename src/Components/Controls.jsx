@@ -104,7 +104,7 @@ class Controls extends Component {
                     id="quickhullBtn"
                     disabled={!this.state.enabled[3]}
                 >
-                    QuickHull
+                    Quickhull
                 </button>
                 <button
                     onClick={() => this.childFunction(4)}
