@@ -26,10 +26,11 @@ class Main extends Component {
                 //visualizer.quickSort();
                 break;
             case 3:
-                visualizer.runQuickHull();
+                visualizer.runQuickhull();
                 //visualizer.heapSort();
                 break;
             case 4:
+                visualizer.runDeletePoints();
                 //visualizer.selectionSort();
                 break;
             default:
@@ -42,7 +43,7 @@ class Main extends Component {
     };
 
     animationFinished = () => {
-        //this.refs.controlChild.enableUI();
+        this.refs.controlChild.enableUI();
     };
 
     render() {
@@ -53,7 +54,10 @@ class Main extends Component {
                     functionCallFromParent={this.parentFunction.bind(this)}
                     updateBars={this.updateBars.bind(this)}
                 ></Controls>
-                <ConvexHullVisualizer ref="child"></ConvexHullVisualizer>
+                <ConvexHullVisualizer
+                    ref="child"
+                    animationFinished={this.animationFinished.bind(this)}
+                ></ConvexHullVisualizer>
             </div>
         );
     }

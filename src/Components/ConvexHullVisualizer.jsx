@@ -1,10 +1,7 @@
 import React from "react";
 import { forwardRef, useImperativeHandle, useEffect, useRef } from "react";
-import {
-    getJarvisMarchAnimations,
-    getGrahamScanAnimations,
-    getQuickhullAnimations,
-} from "../Algorithms/jarvisMarch.js";
+import { getJarvisMarchAnimations } from "../Algorithms/jarvisMarch.js";
+import { getQuickhullAnimations } from "../Algorithms/quickhull.js";
 import { render } from "react-dom";
 
 // Constants
@@ -17,7 +14,7 @@ const AREA_COLOR = "rgb(65,105,225, 0.08)";
 const AREA_COLOR_2 = "rgb(100,149,237, 0.08)";
 
 var canvasWidth, canvasHeight;
-var numberOfPoints = 50;
+var numberOfPoints = 100;
 var points = [];
 
 var globalContext;
@@ -25,7 +22,11 @@ var timeouts = [];
 
 // Animation stuff
 var animationDuration = 3000;
-var animationSpeed = animationDuration / numberOfPoints;
+var animationSpeed = (animationDuration / numberOfPoints) * 2;
+const QUICKHULL_SPEED = 0.2;
+const JARVIS_SPEED = 1.5;
+
+var animating = false;
 
 const generateRandomPoints = () => {
     for (let i = 0; i < numberOfPoints; ++i) {
@@ -41,6 +42,8 @@ const generateRandomPoints = () => {
 };
 
 const renderPoints = (context) => {
+    globalContext.fillStyle = POINT_COLOR;
+
     for (let i = 0; i < points.length; ++i) {
         timeouts.push(
             setTimeout(() => {
@@ -52,7 +55,7 @@ const renderPoints = (context) => {
                             context.beginPath();
                             context.arc(p.x, p.y, j * 3, 0, 2 * Math.PI);
                             context.fill();
-                        }, j * animationSpeed)
+                        }, j * 50)
                     );
                 }
             }, (i * animationSpeed) / 10)
@@ -83,6 +86,17 @@ const drawConvexHull = (convexHull) => {
     globalContext.fill();
 };
 
+const drawConvexHullQH = (convexHull) => {
+    globalContext.moveTo(convexHull[0].x, convexHull[0].y);
+    for (let i = 1; i < convexHull.length + 1; ++i) {
+        let idx = i % convexHull.length;
+        globalContext.lineTo(convexHull[idx].x, convexHull[idx].y);
+    }
+
+    globalContext.fillStyle = AREA_COLOR_2;
+    globalContext.fill();
+};
+
 const executeAnimations = (animations) => {};
 
 const clearTimeouts = () => {
@@ -93,68 +107,81 @@ const clearTimeouts = () => {
 };
 
 // Algorithm callers
-const jarvisMarch = () => {
-    clearTimeouts();
+const jarvisMarch = (props) => {
+    if (!animating) {
+        animating = true;
+        clearTimeouts();
 
-    // Execute jarvis march
-    let animations = getJarvisMarchAnimations(points);
+        // Execute jarvis march
+        let animations = getJarvisMarchAnimations(points);
 
-    for (let i = 0; i < animations.length; ++i) {
-        timeouts.push(
-            setTimeout(() => {
-                globalContext.clearRect(
-                    0,
-                    0,
-                    globalContext.canvas.width,
-                    globalContext.canvas.height
-                );
-
-                let currAnim = animations[i];
-                globalContext.lineWidth = 10;
-
-                if (currAnim.a !== null) {
-                    // draw current comparison
-                    globalContext.beginPath();
-                    globalContext.strokeStyle = CURR_COLOR;
-                    globalContext.moveTo(currAnim.a.x, currAnim.a.y);
-                    globalContext.lineTo(currAnim.b.x, currAnim.b.y);
-                    globalContext.stroke();
-
-                    // draw current best
-                    globalContext.beginPath();
-                    globalContext.strokeStyle = EXTRA_COLOR;
-                    globalContext.moveTo(currAnim.a.x, currAnim.a.y);
-                    globalContext.lineTo(
-                        currAnim.currBest.x,
-                        currAnim.currBest.y
-                    );
-                    globalContext.stroke();
-                }
-
-                // draw hull so far
-                globalContext.beginPath();
-                globalContext.strokeStyle = HULL_COLOR;
-                drawConvexHull(currAnim.hull);
-                globalContext.stroke();
-
-                simpleDrawPoints();
-
-                globalContext.fillStyle = HULL_COLOR;
-
-                globalContext.moveTo(currAnim.hull[0].x, currAnim.hull[0].y);
-                for (let i = 0; i < currAnim.hull.length; ++i) {
-                    globalContext.beginPath();
-                    globalContext.arc(
-                        currAnim.hull[i].x,
-                        currAnim.hull[i].y,
-                        15,
+        for (let i = 0; i < animations.length; ++i) {
+            timeouts.push(
+                setTimeout(() => {
+                    globalContext.clearRect(
                         0,
-                        2 * Math.PI
+                        0,
+                        globalContext.canvas.width,
+                        globalContext.canvas.height
                     );
-                    globalContext.fill();
-                }
-            }, animationSpeed * i)
-        );
+
+                    let currAnim = animations[i];
+                    globalContext.lineWidth = 10;
+
+                    if (currAnim.a !== null) {
+                        // draw current comparison
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = CURR_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.stroke();
+
+                        // draw current best
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = EXTRA_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(
+                            currAnim.currBest.x,
+                            currAnim.currBest.y
+                        );
+                        globalContext.stroke();
+                    }
+
+                    // draw hull so far
+                    globalContext.beginPath();
+                    globalContext.strokeStyle = HULL_COLOR;
+                    drawConvexHull(currAnim.hull);
+                    globalContext.stroke();
+
+                    simpleDrawPoints();
+
+                    globalContext.fillStyle = HULL_COLOR;
+
+                    globalContext.moveTo(
+                        currAnim.hull[0].x,
+                        currAnim.hull[0].y
+                    );
+                    for (let i = 0; i < currAnim.hull.length; ++i) {
+                        globalContext.beginPath();
+                        globalContext.arc(
+                            currAnim.hull[i].x,
+                            currAnim.hull[i].y,
+                            15,
+                            0,
+                            2 * Math.PI
+                        );
+                        globalContext.fill();
+                    }
+
+                    if (i === animations.length - 1) {
+                        animating = false;
+                        props.animationFinished();
+                    }
+                }, (animationSpeed * i) / JARVIS_SPEED)
+            );
+        }
+    } else {
+        stopAnimation();
     }
 
     // globalContext.strokeStyle = "mediumpurple";
@@ -173,8 +200,85 @@ const grahamScan = () => {
     // Execute graham scan
 };
 
-const quickHull = () => {
-    // Execute quickhull
+const quickHull = (props) => {
+    if (!animating) {
+        animating = true;
+        // Execute quickhull
+        clearTimeouts();
+
+        // Execute jarvis march
+        let animations = getQuickhullAnimations(points);
+
+        for (let i = 0; i < animations.length; ++i) {
+            timeouts.push(
+                setTimeout(() => {
+                    globalContext.clearRect(
+                        0,
+                        0,
+                        globalContext.canvas.width,
+                        globalContext.canvas.height
+                    );
+
+                    let currAnim = animations[i];
+                    globalContext.lineWidth = 10;
+
+                    if (currAnim.a !== null) {
+                        // draw current comparison
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = CURR_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.stroke();
+                    }
+
+                    if (currAnim.currBest != null) {
+                        // draw current best
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = EXTRA_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(
+                            currAnim.currBest.x,
+                            currAnim.currBest.y
+                        );
+                        globalContext.stroke();
+                    }
+
+                    // draw hull so far
+                    globalContext.beginPath();
+                    globalContext.strokeStyle = HULL_COLOR;
+                    drawConvexHullQH(currAnim.hull);
+                    globalContext.stroke();
+
+                    simpleDrawPoints();
+
+                    globalContext.fillStyle = HULL_COLOR;
+
+                    globalContext.moveTo(
+                        currAnim.hull[0].x,
+                        currAnim.hull[0].y
+                    );
+                    for (let i = 0; i < currAnim.hull.length; ++i) {
+                        globalContext.beginPath();
+                        globalContext.arc(
+                            currAnim.hull[i].x,
+                            currAnim.hull[i].y,
+                            15,
+                            0,
+                            2 * Math.PI
+                        );
+                        globalContext.fill();
+                    }
+
+                    if (i === animations.length - 1) {
+                        animating = false;
+                        props.animationFinished();
+                    }
+                }, (animationSpeed * i) / QUICKHULL_SPEED)
+            );
+        }
+    } else {
+        stopAnimation();
+    }
 };
 
 const getPixelRatio = (context) => {
@@ -188,6 +292,78 @@ const getPixelRatio = (context) => {
         1;
 
     return (window.devicePixelRatio || 1) / backingStore;
+};
+
+const stopAnimation = () => {
+    animating = false;
+    clearTimeouts();
+    globalContext.clearRect(
+        0,
+        0,
+        globalContext.canvas.width,
+        globalContext.canvas.height
+    );
+    simpleDrawPoints();
+};
+
+const deletePoints = () => {
+    clearTimeouts();
+    for (let i = 0; i < 4; ++i) {
+        timeouts.push(
+            setTimeout(() => {
+                globalContext.clearRect(
+                    0,
+                    0,
+                    globalContext.canvas.width,
+                    globalContext.canvas.height
+                );
+
+                for (let j = 0; j < points.length; ++j) {
+                    let p = points[j];
+                    globalContext.beginPath();
+                    globalContext.arc(p.x, p.y, (3 - i) * 3, 0, 2 * Math.PI);
+                    globalContext.fill();
+                }
+
+                if (i === 3) {
+                    points = [];
+                    globalContext.clearRect(
+                        0,
+                        0,
+                        globalContext.canvas.width,
+                        globalContext.canvas.height
+                    );
+                }
+            }, (i * animationSpeed) / 1.5)
+        );
+    }
+
+    // points = [];
+    // globalContext.clearRect(
+    //     0,
+    //     0,
+    //     globalContext.canvas.width,
+    //     globalContext.canvas.height
+    // );
+    // simpleDrawPoints();
+};
+
+const canvasClicked = (e, ratio) => {
+    globalContext.fillStyle = POINT_COLOR;
+    let p = { x: e.clientX * ratio, y: e.clientY * ratio - 350 };
+    points.push(p);
+
+    for (let j = 0; j < 5; ++j) {
+        timeouts.push(
+            setTimeout(() => {
+                globalContext.beginPath();
+                globalContext.arc(p.x, p.y, j * 3, 0, 2 * Math.PI);
+                globalContext.fill();
+            }, j * 50)
+        );
+    }
+
+    //simpleDrawPoints();
 };
 
 const ConvexHullVisualizer = forwardRef((props, ref) => {
@@ -218,7 +394,13 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
             renderPoints(globalContext);
         },
         runJarvisMarch() {
-            jarvisMarch();
+            jarvisMarch(props);
+        },
+        runQuickhull() {
+            quickHull(props);
+        },
+        runDeletePoints() {
+            deletePoints();
         },
     }));
 
@@ -254,6 +436,14 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
         renderPoints(context);
 
         context.fill();
+
+        canvas.addEventListener(
+            "click",
+            function (e) {
+                canvasClicked(e, ratio);
+            },
+            false
+        );
 
         // Main render function
         const render = () => {

@@ -23,7 +23,7 @@ class Controls extends Component {
 
         var sliderEnabled = false;
 
-        if (algo !== 0) {
+        if (algo !== 0 && algo !== 4) {
             if (!this.state.enabled[0]) {
                 for (let i = 0; i < this.state.enabled.length; ++i) {
                     enabled[i] = true;
@@ -53,6 +53,8 @@ class Controls extends Component {
             buttons[i].id = "none";
         }
 
+        enabled.push(true);
+
         const numBars = this.state.numPoints;
 
         this.setState({ numBars, enabled, sliderEnabled: true });
@@ -78,7 +80,7 @@ class Controls extends Component {
                     className="randomizeBtn"
                     disabled={!this.state.enabled[0]}
                 >
-                    Randomize
+                    Generate Points
                 </button>
                 <button
                     onClick={() => this.childFunction(1)}
@@ -105,13 +107,13 @@ class Controls extends Component {
                     QuickHull
                 </button>
                 <button
-                    onClick={() => this.childFunction(7)}
+                    onClick={() => this.childFunction(4)}
                     className="deleteBtn"
-                    disabled={!this.state.enabled[7]}
+                    disabled={!this.state.enabled[4]}
                 >
                     <FontAwesomeIcon
                         className="trash"
-                        transform="shrink-3 up-3"
+                        transform="shrink-4 up-3"
                         size="2x"
                         icon={faTrash}
                     />
