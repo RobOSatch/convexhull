@@ -361,7 +361,9 @@ const canvasClicked = (e, ratio) => {
     globalContext.fillStyle = POINT_COLOR;
     let p = {
         x: e.clientX * window.devicePixelRatio,
-        y: e.clientY * window.devicePixelRatio - 175 * window.devicePixelRatio,
+        y:
+            e.clientY * window.devicePixelRatio -
+            window.devicePixelRatio * window.innerHeight * 0.146,
     };
     points.push(p);
 
@@ -430,7 +432,8 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
         let context = canvas.getContext("2d");
         globalContext = context;
 
-        let ratio = getPixelRatio(context);
+        //let ratio = getPixelRatio(context);
+        let ratio = window.devicePixelRatio;
         let width = getComputedStyle(canvas)
             .getPropertyValue("width")
             .slice(0, -2);
@@ -438,8 +441,8 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
             .getPropertyValue("height")
             .slice(0, -2);
 
-        canvas.width = width * ratio;
-        canvas.height = height * ratio * 0.8;
+        canvas.width = window.innerWidth * ratio;
+        canvas.height = window.innerHeight * ratio * 0.8;
         canvas.style.width = `${width}px`;
         canvas.style.height = `${height * 0.8}px`;
 
