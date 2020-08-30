@@ -359,7 +359,10 @@ const deletePoints = () => {
 
 const canvasClicked = (e, ratio) => {
     globalContext.fillStyle = POINT_COLOR;
-    let p = { x: e.clientX * ratio, y: e.clientY * ratio - 350 };
+    let p = {
+        x: e.clientX * window.devicePixelRatio,
+        y: e.clientY * window.devicePixelRatio - 175 * window.devicePixelRatio,
+    };
     points.push(p);
 
     for (let j = 0; j < 5; ++j) {
@@ -481,7 +484,12 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
     });
 
     return (
-        <canvas ref={canvasRef} style={{ width: "100%", height: "1080px" }} />
+        <div className="convexhull">
+            <canvas
+                ref={canvasRef}
+                style={{ width: "100%", height: "1000px" }}
+            />
+        </div>
     );
 });
 
