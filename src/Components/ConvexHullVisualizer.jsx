@@ -10,8 +10,8 @@ const LINE_COLOR = "lightskyblue";
 const HULL_COLOR = "royalblue";
 const CURR_COLOR = "mediumpurple";
 const EXTRA_COLOR = "cornflowerblue";
-const AREA_COLOR = "rgb(65,105,225, 0.08)";
-const AREA_COLOR_2 = "rgb(100,149,237, 0.08)";
+const AREA_COLOR_2 = "rgb(65,105,225, 0.1)";
+const AREA_COLOR = "rgb(100,149,237, 0.1)";
 
 var canvasWidth, canvasHeight;
 var numberOfPoints = 50;
