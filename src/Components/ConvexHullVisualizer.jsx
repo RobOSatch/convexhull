@@ -3,6 +3,7 @@ import { forwardRef, useImperativeHandle, useEffect, useRef } from "react";
 import { getJarvisMarchAnimations } from "../Algorithms/jarvisMarch.js";
 import { getQuickhullAnimations } from "../Algorithms/quickhull.js";
 import { render } from "react-dom";
+import { getGrahamScanAnimations } from "../Algorithms/grahamScan.js";
 
 // Constants
 const POINT_COLOR = "cornflowerblue";
@@ -25,6 +26,7 @@ var animationDuration = 3000;
 var animationSpeed = (animationDuration / numberOfPoints) * 2;
 const QUICKHULL_SPEED = 0.2;
 const JARVIS_SPEED = 1.5;
+const GRAHAM_SPEED = 0.4;
 
 var pointRadius = 15;
 var strokeWidth = 10;
@@ -205,8 +207,82 @@ const jarvisMarch = (props) => {
     // globalContext.stroke();
 };
 
-const grahamScan = () => {
-    // Execute graham scan
+const grahamScan = (props) => {
+    if (!animating) {
+        animating = true;
+        clearTimeouts();
+
+        // Execute jarvis march
+        let animations = getGrahamScanAnimations(points);
+
+        for (let i = 0; i < animations.length; ++i) {
+            timeouts.push(
+                setTimeout(() => {
+                    globalContext.clearRect(
+                        0,
+                        0,
+                        globalContext.canvas.width,
+                        globalContext.canvas.height
+                    );
+
+                    let currAnim = animations[i];
+                    globalContext.lineWidth = strokeWidth;
+
+                    if (currAnim.a !== null) {
+                        // draw current comparison
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = HULL_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.stroke();
+
+                        // draw current best
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = CURR_COLOR;
+                        globalContext.moveTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.lineTo(
+                            currAnim.currBest.x,
+                            currAnim.currBest.y
+                        );
+                        globalContext.stroke();
+                    }
+
+                    // draw hull so far
+                    globalContext.beginPath();
+                    globalContext.strokeStyle = HULL_COLOR;
+                    drawConvexHull(currAnim.hull);
+                    globalContext.stroke();
+
+                    simpleDrawPoints();
+
+                    globalContext.fillStyle = HULL_COLOR;
+
+                    globalContext.moveTo(
+                        currAnim.hull[0].x,
+                        currAnim.hull[0].y
+                    );
+                    for (let i = 0; i < currAnim.hull.length; ++i) {
+                        globalContext.beginPath();
+                        globalContext.arc(
+                            currAnim.hull[i].x,
+                            currAnim.hull[i].y,
+                            pointRadius,
+                            0,
+                            2 * Math.PI
+                        );
+                        globalContext.fill();
+                    }
+
+                    if (i === animations.length - 1) {
+                        animating = false;
+                        props.animationFinished();
+                    }
+                }, (animationSpeed * i) / GRAHAM_SPEED)
+            );
+        }
+    } else {
+        stopAnimation();
+    }
 };
 
 const quickHull = (props) => {
@@ -343,7 +419,7 @@ const deletePoints = () => {
                         globalContext.canvas.height
                     );
                 }
-            }, (i * animationSpeed) / 1.5)
+            }, i * 35)
         );
     }
 
@@ -416,6 +492,9 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
         },
         runJarvisMarch() {
             jarvisMarch(props);
+        },
+        runGrahamScan() {
+            grahamScan(props);
         },
         runQuickhull() {
             quickHull(props);
