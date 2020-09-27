@@ -4,6 +4,34 @@
     font-weight: bold;
 }
 
+.descriptionBox {
+    height: 15%;
+    width: 100%;
+    position: absolute;
+}
+
+.description {
+    position: absolute;
+    top: 500px;
+    border-radius: 5px;
+    margin: 2% 5%;
+    height: 50%;
+    line-height: 550%;
+    text-align: center;
+    color: rgb(35, 40, 43);
+    background-color: lightgray;
+}
+
+span {
+    margin: 1%;
+    font-size: 18px;
+    background: transparent;
+    color: rgb(35, 40, 43);
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+}
+
 .trash {
     padding: 0%;
     background: transparent;

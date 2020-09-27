@@ -437,7 +437,10 @@ const canvasClicked = (e, ratio) => {
     globalContext.fillStyle = POINT_COLOR;
     let p = {
         x: e.clientX * window.devicePixelRatio,
-        y: e.clientY * window.devicePixelRatio - 175 * window.devicePixelRatio,
+        y:
+            e.clientY * window.devicePixelRatio -
+            175 -
+            90 * window.devicePixelRatio,
     };
     points.push(p);
 
@@ -564,7 +567,7 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
 
     const style = {
         width: "100%",
-        height: window.innerHeight - 200,
+        height: window.innerHeight - 400,
     };
 
     return (

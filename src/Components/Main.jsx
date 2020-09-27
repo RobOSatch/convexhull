@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ConvexHullVisualizer from "./ConvexHullVisualizer";
 import Controls from "./Controls";
+import Footer from "./Footer";
 
 var numberOfBars = 10;
 
@@ -46,6 +47,10 @@ class Main extends Component {
         this.refs.controlChild.enableUI();
     };
 
+    showDescription = () => {
+        this.refs.showDescription(algo);
+    };
+
     render() {
         return (
             <div>
@@ -58,6 +63,10 @@ class Main extends Component {
                     ref="child"
                     animationFinished={this.animationFinished.bind(this)}
                 ></ConvexHullVisualizer>
+                <Footer
+                    ref="footerChild"
+                    showDescription={this.showDescription.bind(this)}
+                ></Footer>
             </div>
         );
     }
