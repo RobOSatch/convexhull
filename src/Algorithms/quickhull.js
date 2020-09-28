@@ -10,6 +10,7 @@ export function getQuickhullAnimations(points) {
 	convexHull.push(rightmost);
 
 	animations.push({
+		top: null,
 		a: leftmost,
 		b: rightmost,
 		currBest: rightmost,
@@ -52,6 +53,14 @@ function findHull(S, p, q, convexHull, animations) {
 
 	// Find farthest point from PQ
 	for (let i = 0; i < S.length; ++i) {
+		animations.push({
+			top: S[i],
+			a: p,
+			b: q,
+			currBest: farthest,
+			hull: convexHull.slice(0),
+		});
+
 		let currDist = distToSegment(S[i], p, q);
 		if (currDist > bestDist) {
 			farthest = S[i];
@@ -67,6 +76,7 @@ function findHull(S, p, q, convexHull, animations) {
 	}
 
 	animations.push({
+		top: null,
 		a: p,
 		b: q,
 		currBest: farthest,
@@ -74,6 +84,7 @@ function findHull(S, p, q, convexHull, animations) {
 	});
 
 	animations.push({
+		top: null,
 		a: null,
 		b: null,
 		currBest: null,

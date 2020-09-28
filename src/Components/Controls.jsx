@@ -15,8 +15,6 @@ class Controls extends Component {
     }
 
     childFunction = (algo) => {
-        this.props.functionCallFromParent(algo);
-
         const algoButtons = document.getElementsByClassName("algoBtn");
         var enabled = [];
         const numBars = this.state.numPoints;
@@ -30,6 +28,7 @@ class Controls extends Component {
                     algoButtons[algo - 1].id = "none";
                 }
                 sliderEnabled = true;
+                this.props.functionCallFromParent(algo, false);
             } else {
                 for (let i = 0; i < this.state.enabled.length; ++i) {
                     enabled[i] = false;
@@ -37,11 +36,34 @@ class Controls extends Component {
 
                 enabled[algo] = true;
                 algoButtons[algo - 1].id = "playing";
+
+                this.props.functionCallFromParent(algo, true);
             }
 
             this.setState({ numBars, enabled, sliderEnabled });
+        } else {
+            if (algo === 0) this.setEmpty(false);
+
+            this.props.functionCallFromParent(algo, false);
         }
     };
+
+    disableUI() {
+        const buttons = document.getElementsByClassName("algoBtn");
+
+        const enabled = [true];
+
+        for (let i = 0; i < buttons.length; ++i) {
+            enabled.push(false);
+            buttons[i].id = "none";
+        }
+
+        enabled.push(false);
+
+        const numBars = this.state.numPoints;
+
+        this.setState({ numBars, enabled, sliderEnabled: true });
+    }
 
     enableUI() {
         const buttons = document.getElementsByClassName("algoBtn");
@@ -58,6 +80,14 @@ class Controls extends Component {
         const numBars = this.state.numPoints;
 
         this.setState({ numBars, enabled, sliderEnabled: true });
+    }
+
+    setEmpty(empty) {
+        if (empty) {
+            this.disableUI();
+        } else {
+            this.enableUI();
+        }
     }
 
     updateBars = () => {

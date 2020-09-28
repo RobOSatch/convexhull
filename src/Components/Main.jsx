@@ -9,9 +9,11 @@ var numberOfBars = 10;
 var algo = 0;
 
 class Main extends Component {
-    parentFunction = (data_from_child) => {
+    parentFunction = (data_from_child, state) => {
         algo = data_from_child;
         const visualizer = this.refs.child;
+
+        this.showDescription(state);
 
         switch (data_from_child) {
             case 0:
@@ -39,16 +41,25 @@ class Main extends Component {
         }
     };
 
+    emptyCallback = (empty) => {
+        this.setEmpty(empty);
+    };
+
+    setEmpty = (empty) => {
+        this.refs.controlChild.setEmpty(empty);
+    };
+
     updateBars = () => {
         //this.refs.child.setNumberOfBars();
     };
 
     animationFinished = () => {
         this.refs.controlChild.enableUI();
+        this.refs.footerChild.showDescription(false);
     };
 
-    showDescription = () => {
-        this.refs.showDescription(algo);
+    showDescription = (state) => {
+        this.refs.footerChild.showDescription(algo, state);
     };
 
     render() {
@@ -61,6 +72,7 @@ class Main extends Component {
                 ></Controls>
                 <ConvexHullVisualizer
                     ref="child"
+                    emptyCallback={this.emptyCallback.bind(this)}
                     animationFinished={this.animationFinished.bind(this)}
                 ></ConvexHullVisualizer>
                 <Footer

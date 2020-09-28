@@ -12,10 +12,26 @@
 
 .description {
     position: absolute;
-    top: 500px;
+    top: 100%;
+    visibility: hidden;
+    transition: 0.35s;
     border-radius: 5px;
     margin: 2% 5%;
-    height: 50%;
+    height: auto;
+    line-height: 550%;
+    text-align: center;
+    color: rgb(35, 40, 43);
+    background-color: lightgray;
+}
+
+.descriptionVisible {
+    position: absolute;
+    top: 2%;
+    visibility: visible;
+    transition: 0.35s;
+    border-radius: 5px;
+    margin: 2% 5%;
+    height: auto;
     line-height: 550%;
     text-align: center;
     color: rgb(35, 40, 43);
@@ -23,8 +39,9 @@
 }
 
 span {
+    transition: 0.35s;
     margin: 1%;
-    font-size: 18px;
+    font-size: 1.1em;
     background: transparent;
     color: rgb(35, 40, 43);
     display: inline-block;
@@ -160,4 +177,15 @@ button:disabled {
     font-size: 0.9em;
     font-weight: 200;
     margin-top: 2%;
+}
+
+@media screen {
+    #myDiv {
+        top: 200%;
+        transition: top 0.35s;
+    }
+
+    #myDiv.visible {
+        top: 0%;
+    }
 }

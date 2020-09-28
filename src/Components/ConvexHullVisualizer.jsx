@@ -21,10 +21,12 @@ var points = [];
 var globalContext;
 var timeouts = [];
 
+var parentReference;
+
 // Animation stuff
 var animationDuration = 3000;
 var animationSpeed = (animationDuration / numberOfPoints) * 2;
-const QUICKHULL_SPEED = 0.2;
+const QUICKHULL_SPEED = 0.75;
 const JARVIS_SPEED = 1.5;
 const GRAHAM_SPEED = 0.4;
 
@@ -33,7 +35,11 @@ var strokeWidth = 10;
 
 var animating = false;
 
+var empty = true;
+
 const generateRandomPoints = () => {
+    if (parentReference !== null) parentReference.emptyCallback(false);
+
     for (let i = 0; i < numberOfPoints; ++i) {
         let randomVec = {
             x: getRandomInt(canvasWidth / 10, canvasWidth - canvasWidth / 10),
@@ -307,17 +313,21 @@ const quickHull = (props) => {
                     let currAnim = animations[i];
                     globalContext.lineWidth = strokeWidth;
 
-                    if (currAnim.a !== null) {
+                    if (currAnim.top !== null) {
                         // draw current comparison
                         globalContext.beginPath();
                         globalContext.strokeStyle = CURR_COLOR;
                         globalContext.moveTo(currAnim.a.x, currAnim.a.y);
-                        globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.lineTo(currAnim.top.x, currAnim.top.y);
                         globalContext.stroke();
-                    }
 
-                    if (currAnim.currBest != null) {
-                        // draw current best
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = CURR_COLOR;
+                        globalContext.moveTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.lineTo(currAnim.top.x, currAnim.top.y);
+                        globalContext.stroke();
+
+                        // best triangle
                         globalContext.beginPath();
                         globalContext.strokeStyle = EXTRA_COLOR;
                         globalContext.moveTo(currAnim.a.x, currAnim.a.y);
@@ -326,6 +336,42 @@ const quickHull = (props) => {
                             currAnim.currBest.y
                         );
                         globalContext.stroke();
+
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = EXTRA_COLOR;
+                        globalContext.moveTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.lineTo(
+                            currAnim.currBest.x,
+                            currAnim.currBest.y
+                        );
+                        globalContext.stroke();
+
+                        globalContext.beginPath();
+                        globalContext.strokeStyle = EXTRA_COLOR;
+                        globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                        globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                        globalContext.stroke();
+                    } else {
+                        if (currAnim.a !== null) {
+                            // draw current comparison
+                            globalContext.beginPath();
+                            globalContext.strokeStyle = CURR_COLOR;
+                            globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                            globalContext.lineTo(currAnim.b.x, currAnim.b.y);
+                            globalContext.stroke();
+                        }
+
+                        if (currAnim.currBest != null) {
+                            // draw current best
+                            globalContext.beginPath();
+                            globalContext.strokeStyle = EXTRA_COLOR;
+                            globalContext.moveTo(currAnim.a.x, currAnim.a.y);
+                            globalContext.lineTo(
+                                currAnim.currBest.x,
+                                currAnim.currBest.y
+                            );
+                            globalContext.stroke();
+                        }
                     }
 
                     // draw hull so far
@@ -392,6 +438,8 @@ const stopAnimation = () => {
 };
 
 const deletePoints = () => {
+    if (parentReference !== null) parentReference.emptyCallback(true);
+
     clearTimeouts();
     for (let i = 0; i < 4; ++i) {
         timeouts.push(
@@ -434,6 +482,7 @@ const deletePoints = () => {
 };
 
 const canvasClicked = (e, ratio) => {
+    if (parentReference !== null) parentReference.emptyCallback(false);
     globalContext.fillStyle = POINT_COLOR;
     let p = {
         x: e.clientX * window.devicePixelRatio,
@@ -467,6 +516,8 @@ const ConvexHullVisualizer = forwardRef((props, ref) => {
     let canvasRef = useRef();
     pointRadius = 7.5 * window.devicePixelRatio;
     strokeWidth = 5 * window.devicePixelRatio;
+
+    parentReference = props;
 
     useImperativeHandle(ref, () => ({
         generateRandomPoints() {
